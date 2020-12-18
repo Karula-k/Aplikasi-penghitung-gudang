@@ -52,5 +52,29 @@ class Data_source:
         con.commit()
         con.close()
 
+class Login(Data_source):
+    def __init__(self):
+        super().__init__(db_name, table_name="Datauser")
+        self.db_name =db_name+".db"
+        self.data = table_name
+        con =sqlite3.connect(self.db_name)
+        cur=con.cursor()
+        create_text ="create table if not exists "+self.data+" (Username text primary key NOT NULL,Password integer NOT NULL)"
+        cur.execute(create_text)
+        con.commit()
+        con.close()
+               
+    def Data_Pengguna(self, Username, Password):
+        self.user = Username
+        self.sandi = Password
+        con=sqlite3.connect(self.db_name)
+        cur =con.cursor()
+        cur.execute("insert into "+self.data+" values (NULL,?,?)",(Username, Password))
+        con.commit()
+        con.close()
+
 ayam = Data_source("ayam","stocks")
 ayam.Data_Update("ayam")
+
+data1 = Login(input("Masukkan Username : "), input("Masukkan Password : "))
+print(data1.Data_Pengguna())
