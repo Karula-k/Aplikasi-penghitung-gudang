@@ -51,30 +51,61 @@ class Data_source:
         cur.execute(text)
         con.commit()
         con.close()
-
-class Login(Data_source):
-    def __init__(self):
-        super().__init__(db_name, table_name="Datauser")
+    def order_by(self,type_cl):
+        con=sqlite3.connect(self.db_name)
+        cur =con.cursor()
+        text ="select * from "+self.table_name+" order by "+type_cl
+        cur.execute(text)
+        row =cur.fetchall()
+        con.commit()
+        con.close()
+        return row
+class Login_syt:
+    def __init__(self,db_name,table_name="Datauser"):
         self.db_name =db_name+".db"
         self.data = table_name
         con =sqlite3.connect(self.db_name)
         cur=con.cursor()
-        create_text ="create table if not exists "+self.data+" (Username text primary key NOT NULL,Password integer NOT NULL)"
+        create_text ="create table if not exists "+self.data+" (id integer primary key,username text,Password text)"
         cur.execute(create_text)
         con.commit()
         con.close()
-               
+                
     def Data_Pengguna(self, Username, Password):
-        self.user = Username
-        self.sandi = Password
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()
-        cur.execute("insert into "+self.data+" values (NULL,?,?)",(Username, Password))
+        cur.execute("insert into "+self.data+" values (NULL,?,?)",(Username,Password))
         con.commit()
         con.close()
 
 ayam = Data_source("ayam","stocks")
-ayam.Data_Update("ayam")
+ayam2 = Login_syt('ayam')
+# ayam2.Data_Pengguna("usop",'pembohong')
+# ayam.Data_Update("ayam")
 
-data1 = Login(input("Masukkan Username : "), input("Masukkan Password : "))
-print(data1.Data_Pengguna())
+# data1 = Login(input("Masukkan Username : "), input("Masukkan Password : "))
+# print(data1.Data_Pengguna())
+
+
+
+class login_call(Data_source):
+    def __init__(self, db_name, table_name='Datauser'):
+        super().__init__(db_name, table_name=table_name)
+    
+    def Search_Data(self,Username,Password):
+        con=sqlite3.connect(self.db_name)
+        cur =con.cursor()
+        cur.execute("Select * From "+self.table_name+" where username=? and password=?",(Username,Password))
+        row = cur.fetchall()
+        con.commit()
+        con.close()
+        return row
+    def Call_data(self):
+        con=sqlite3.connect(self.db_name)
+        cur =con.cursor()
+        cur.execute("Select * From "+self.table_name)
+        row = cur.fetchall()
+        con.commit()
+        con.close()
+        return row
+uy = login_call("ayam")
