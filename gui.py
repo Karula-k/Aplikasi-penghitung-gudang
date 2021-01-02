@@ -48,9 +48,9 @@ class SecondPage(tk.Frame):
         mainframe.grid()
         
         tree_frame = tk.Frame(mainframe)
-        tree_frame.grid(row=0,column=3,sticky='s')
+        tree_frame.grid(row=0,column=3,sticky='n')
         style = ttk.Style(mainframe)
-        style.configure('page2.Treeview', rowheight=35)
+        style.configure('page2.Treeview', rowheight=36)
         xtree_scroll = tk.Scrollbar(tree_frame,orient='horizontal')
         xtree_scroll.pack(side='bottom',fill='x')
         tree_scroll = tk.Scrollbar(tree_frame)
@@ -70,11 +70,6 @@ class SecondPage(tk.Frame):
         my_tree.column("type", anchor='w', width=70,minwidth=120)
         my_tree.column("Dimensi", anchor='w', width=80,minwidth=130)
         my_tree.column("Expire_cair", anchor='w', width=70,minwidth=120)
-        def orderby(c1):
-            data1 = ayam.order_by(c1)
-            for i in data1:
-                my_tree.insert(parent='', index='end', text="", values=(i[0],i[1], i[2], i[3],i[4]))
-
         # Create Headings 
         my_tree.heading("#0", text="", anchor='w')
         my_tree.heading("id", text="ID", anchor='center')
@@ -111,17 +106,17 @@ class SecondPage(tk.Frame):
         
         #entry boxes
         id_str = tk.Entry(add_frame,text = idstr,state=tk.DISABLED)
-        id_str.grid(row =1 ,column =0,sticky='w',pady=10)
+        id_str.grid(row =1 ,column =0,sticky='w',pady=5)
         name_str = tk.Entry(add_frame)
-        name_str.grid(row=1, column=1,pady=10,sticky='w')
+        name_str.grid(row=1, column=1,pady=5,sticky='w')
 
         Spp_str = tk.Entry(add_frame)
-        Spp_str.grid(row=1, column=2,pady=10,sticky='w')
+        Spp_str.grid(row=1, column=2,pady=5,sticky='w')
 
         hargaint = tk.Entry(add_frame)
-        hargaint.grid(row=1, column=3,pady=10,sticky='w')
+        hargaint.grid(row=1, column=3,pady=5,sticky='w')
         tgl_str = tk.Entry(add_frame)
-        tgl_str.grid(row=1,column=4,pady=10,sticky='w')
+        tgl_str.grid(row=1,column=4,pady=5,sticky='w')
         rak_str = tk.Entry(add_frame)
         rak_str.grid(row=3,column=1,pady=5)
         type_str = tk.Entry(add_frame)
@@ -137,22 +132,9 @@ class SecondPage(tk.Frame):
             remove_all()
             data = ayam.viewData()
             for record in data:
-                my_tree.insert(parent='', index='end', text="", values=(record[0],record[1], record[2], record[3],record[4]))
-     
+                my_tree.insert(parent='', index='end', text="", values=(record[0],record[1], record[2], record[3],record[4],record[5],record[6],record[7],record[8]))
         def add_values():
-            ayam.add_br(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
-            dimensi_str.get(),expire_str.get())
-            remove_all()
-            view()
-            idstr.set("")
-            name_str.delete(0, tk.END)
-            Spp_str.delete(0, tk.END)
-            hargaint.delete(0, tk.END)
-            tgl_str.delete(0,tk.END)
-            rak_str.delete(0,tk.END)
-            type_str.delete(0,tk.END)
-            dimensi_str.delete(0,tk.END)
-            expire_str.delete(0,tk.END)
+            rak_str.get()
         def remove_many():
             x = my_tree.selection()
             #y = my_tree.item(my_tree.selection())["name"]
@@ -195,8 +177,8 @@ class SecondPage(tk.Frame):
             expire_str.insert(0,values[8])
         def update():
             selected = my_tree.focus()
-            ayam.Data_Update(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
-            dimensi_str.get(),expire_str.get())
+            ayam.update(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
+            dimensi_str.get(),expire_str.get(),id_str.get())
             remove_all()
             view()
             idstr.set("")
@@ -211,18 +193,19 @@ class SecondPage(tk.Frame):
 
         def selectItem(e):
             select_case()
+        #button
         btn_plc = tk.Frame(mainframe)
         btn_plc.grid(column=0,row=0)
         view_btn = tk.Button(btn_plc, text="View", font=("Arial", 15),relief='ridge' ,width=10, command= view)
-        view_btn.pack(pady=10,padx=10)
+        view_btn.pack(pady=5,padx=10)
         insert_btn = tk.Button(btn_plc, text="Insert", font=("Arial", 15),relief='ridge' ,width=10, command= add_values)
-        insert_btn.pack(pady=10,padx=10)
+        insert_btn.pack(pady=5,padx=10)
         Log_outbtn = tk.Button(btn_plc, text="Back", font=("Arial", 15),relief='ridge',width=10, command=lambda: controller.show_frame(FirstPage))
-        Log_outbtn.pack(pady=10,padx=10)
+        Log_outbtn.pack(pady=5,padx=10)
         del_btn = tk.Button(btn_plc, text="Delete", font=("Arial", 15),relief='ridge',width=10, command=lambda: remove_many())
-        del_btn.pack(pady=10,padx=10)
+        del_btn.pack(pady=5,padx=10)
         Update_btn = tk.Button(btn_plc, text="Update", font=("Arial", 15),relief='ridge',width=10, command=lambda: update() )
-        Update_btn.pack(pady=10,padx=10)
+        Update_btn.pack(pady=5,padx=10)
         my_tree.bind("<ButtonRelease-1>", selectItem)
 class ThirdPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -288,7 +271,3 @@ class Application(tk.Tk):
         frame.tkraise()
         self.title("Application")
             
-app = Application()
-app.maxsize(800,500)
-app.resizable('false','false')
-app.mainloop()

@@ -5,33 +5,18 @@ class barang(metaclass=abc.ABCMeta):
     def addItems(self):
         pass
     @abc.abstractmethod
-    def viewData(self):
-        pass
-    @abc.abstractmethod
-    def searchData(self):
-        pass
-    @abc.abstractmethod
     def DataUpdate(self):
         pass
 class liquid(barang):
-    def add_items(self,name,Supplier,harga,tanggal_masuk,rak,type_benda,expire_liquid):
+    def addItems(self,name,Supplier,harga,tanggal_masuk,rak,type_benda,expire_liquid):
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()
-        cur.execute("insert into "+self.table_name+" values (NULL,?,?,?,?,?,?,?)",
-        (name,Supplier,harga,tanggal_masuk,rak,type_benda,expire_liquid))
+        cur.execute("insert into "+self.table_name+" values (NULL,?,?,?,?,?,?,?,?)",
+        (name,Supplier,harga,tanggal_masuk,rak,type_benda,"NULL",expire_liquid))
         con.commit()
         con.close()
-    def Search_Data(self,name="",Supplier="",harga="",tanggal_masuk="",rak="",type_benda="",expire_liquid=""):
-        con=sqlite3.connect(self.db_name)
-        cur =con.cursor()
-        text ="Select * From "+self.table_name+" where name=? or Supplier=? or harga=? or tanggal_masuk=? \
-            or rak =? or type_benda=? or expire_liquid=?"
-        cur.execute(text,(name,Supplier,harga,tanggal_masuk,rak,type_benda,expire_liquid))
-        rows =cur.fetchall()
-        con.close()
-        return rows
 
-    def Data_Update (self,name=None,Supplier=None,harga=None,tanggal_masuk=None,rak=None,expire_liquid=None,idbr=-1):
+    def DataUpdate (self,name=None,Supplier=None,harga=None,tanggal_masuk=None,rak=None,expire_liquid=None,idbr=-1):
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()
         dict_items = {"name":name,"Supplier":Supplier,"harga":harga,"tanggal_masuk":tanggal_masuk,"rak":rak,"\
@@ -43,24 +28,14 @@ class liquid(barang):
         con.commit()
         con.close()    
 class padatan(barang):
-    def add_items(self,name,Supplier,harga,tanggal_masuk,rak,type_benda,dimensi_benda):
+    def addItems(self,name,Supplier,harga,tanggal_masuk,rak,type_benda,dimensi_benda):
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()
-        cur.execute("insert into "+self.table_name+" values (NULL,?,?,?,?,?,?,?)",
+        cur.execute("insert into "+self.table_name+" values (NULL,?,?,?,?,?,?,?,NULL)",
         (name,Supplier,harga,tanggal_masuk,rak,type_benda,dimensi_benda))
         con.commit()
         con.close()
-
-    def Search_Data(self,name="",Supplier="",harga="",tanggal_masuk="",rak="",type_benda="",dimnesi=""):
-        con=sqlite3.connect(self.db_name)
-        cur =con.cursor()
-        text ="Select * From "+self.table_name+" where name=? or Supplier=? or harga=? or tanggal_masuk=?or rak =? or type_benda=? or dimensi_benda=?"
-        cur.execute(text,(name,Supplier,harga,tanggal_masuk,rak,type_benda,dimnesi))
-        rows =cur.fetchall()
-        con.close()
-        return rows
-
-    def Data_Update (self,name=None,Supplier=None,harga=None,tanggal_masuk=None,rak=None,type_benda=None,dimnesi=None,idbr=-1):
+    def DataUpdate (self,name=None,Supplier=None,harga=None,tanggal_masuk=None,rak=None,type_benda=None,dimnesi=None,idbr=-1):
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()
         dict_items = {"name":name,"Supplier":Supplier,"harga":harga,"tanggal_masuk":tanggal_masuk}
@@ -85,10 +60,10 @@ class Data_source():
         con.close()
     def add_br(self,*args):
         if args[5]=="liquid":
-            h = liquid.addItems(args[k] for k in args)
+            h = liquid.addItems(self,args[0],args[1],args[2],args[3],args[4],args[5],args[7])
             print(args)
         else:
-            h = padatan.addItems(args[k] for k in args)
+            h = padatan.addItems(self,args[0],args[1],args[2],args[3],args[4],args[5],args[6])
             print(args)
     def viewData(self):
         con=sqlite3.connect(self.db_name)
@@ -97,14 +72,19 @@ class Data_source():
         rows =cur.fetchall()
         con.close()
         return rows
-
+    def update(self,*args):
+        if args[5]=="liquid":
+            h = liquid.DataUpdate(self,args[0],args[1],args[2],args[3],args[4],args[5],args[7],args[8])
+            print(args)
+        else:
+            h = padatan.DataUpdate(self,args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[8])
+            print(args)
     def delete_items(self,id):
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()
         cur.execute("DELETE FROM "+self.table_name+" Where id=?",(id,))
         con.commit()
         con.close()
-
     def order_by(self,type_cl):
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()
@@ -136,7 +116,6 @@ ayam = Data_source("ayam","stocks")
 ayam2 = Login_syt('ayam')
 # ayam2.Data_Pengguna("usop",'pembohong')
 # ayam.Data_Update("ayam")
-
 # data1 = Login(input("Masukkan Username : "), input("Masukkan Password : "))
 # print(data1.Data_Pengguna())
 
