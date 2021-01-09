@@ -85,6 +85,16 @@ class Data_source():
         cur.execute("DELETE FROM "+self.table_name+" Where id=?",(id,))
         con.commit()
         con.close()
+    def Search_Data(self,name="",Supplier="",harga="",tanggal_masuk="",rak="",type_benda="",dimensi_benda="",
+        expire_liquid=""):
+        con=sqlite3.connect(self.db_name)
+        cur =con.cursor()
+        text ="Select * From "+self.table_name+" where name=? or Supplier=? or harga=? or tanggal_masuk=? \
+            or rak =? or type_benda=? or dimensi_benda=? or expire_liquid=?"
+        cur.execute(text,(name,Supplier,harga,tanggal_masuk,rak,type_benda,dimensi_benda,expire_liquid))
+        rows =cur.fetchall()
+        con.close()
+        return rows
     def order_by(self,type_cl):
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()

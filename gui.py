@@ -204,9 +204,32 @@ class SecondPage(tk.Frame):
             type_str.delete(0,tk.END)
             dimensi_str.delete(0,tk.END)
             expire_str.delete(0,tk.END)
-
+        def search():
+            remove_all()
+            data = ayam.Search_Data(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
+            dimensi_str.get(),expire_str.get())
+            for record in data:
+                my_tree.insert(parent='', index='end', text="", values=(record[0],record[1], record[2], record[3],record[4],record[5],record[6],record[7],record[8]))
+            idstr.set("")
+            name_str.delete(0, tk.END)
+            Spp_str.delete(0, tk.END)
+            hargaint.delete(0, tk.END)
+            tgl_str.delete(0,tk.END)
+            rak_str.delete(0,tk.END)
+            type_str.delete(0,tk.END)
+            dimensi_str.delete(0,tk.END)
+            expire_str.delete(0,tk.END)
         def selectItem(e):
             select_case()
+        def on_double_click(e):
+            region =my_tree.identify_column(e.x)
+            region = int(region.strip('#'))-1
+            print(region)
+            my_column= ["id","Name", "Supplier", "harga","Tanggal Masuk","Rak","type","Dimensi","Expire_cair"]
+            data = ayam.order_by(my_column[region])
+            remove_all()
+            for record in data:
+                my_tree.insert(parent='', index='end', text="", values=(record[0],record[1], record[2], record[3],record[4],record[5],record[6],record[7],record[8]))
         #button
         btn_plc = tk.Frame(mainframe)
         btn_plc.grid(column=0,row=0)
@@ -220,7 +243,10 @@ class SecondPage(tk.Frame):
         del_btn.pack(pady=5,padx=10)
         Update_btn = tk.Button(btn_plc, text="Update", font=("Arial", 15),relief='ridge',width=10, command=lambda: update() )
         Update_btn.pack(pady=5,padx=10)
+        Search_btn = tk.Button(btn_plc, text="Search", font=("Arial", 15),relief='ridge',width=10, command=lambda: search() )
+        Search_btn.pack(pady=5,padx=10)
         my_tree.bind("<ButtonRelease-1>", selectItem)
+        my_tree.bind("<Double-1>",on_double_click)
 class ThirdPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -250,9 +276,16 @@ class ThirdPage(tk.Frame):
         def submit():
             if usernament.get() !="" and passworden.get() !="" and repassworden.get() != "":
                 if passworden.get() == repassworden.get():
-                    user=usernament.get()
-                    pas=passworden.get()
-                    ayam2.Data_Pengguna(user,pas)
+                    for i in uy.Call_data():
+                        if i[1].strip()==usernament.get() and i[2].strip()==passworden.get():
+                            messagebox.showinfo("Error","Data Already taken")
+                            break
+                    else:
+                        user=usernament.get()
+                        pas=passworden.get()
+                        ayam2.Data_Pengguna(user,pas)
+                        messagebox.showinfo("Succes","your account has registed")
+                        controller.show_frame(FirstPage)
                 else:
                     messagebox.showinfo("error","password not match")
             else:
@@ -284,7 +317,7 @@ class Application(tk.Tk):
         frame = self.frames[page]
         frame.tkraise()
         self.title("Application")
-            
+
 app = Application()
 app.maxsize(800,500)
 app.resizable('false','false')
