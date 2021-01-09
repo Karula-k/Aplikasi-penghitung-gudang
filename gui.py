@@ -45,6 +45,8 @@ class SecondPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.configure(bg="cadet blue")
         mainframe = tk.Frame(self)
+
+        
         mainframe.grid()
         
         tree_frame = tk.Frame(mainframe)
@@ -271,3 +273,7 @@ class Application(tk.Tk):
         frame.tkraise()
         self.title("Application")
             
+app = Application()
+app.maxsize(800,500)
+app.resizable('false','false')
+app.mainloop()
