@@ -136,7 +136,19 @@ class SecondPage(tk.Frame):
             for record in data:
                 my_tree.insert(parent='', index='end', text="", values=(record[0],record[1], record[2], record[3],record[4],record[5],record[6],record[7],record[8]))
         def add_values():
-            rak_str.get()
+            ayam.add_br(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
+            dimensi_str.get(),expire_str.get())
+            remove_all()
+            view()
+            idstr.set("")
+            name_str.delete(0, tk.END)
+            Spp_str.delete(0, tk.END)
+            hargaint.delete(0, tk.END)
+            tgl_str.delete(0,tk.END)
+            rak_str.delete(0,tk.END)
+            type_str.delete(0,tk.END)
+            dimensi_str.delete(0,tk.END)
+            expire_str.delete(0,tk.END)
         def remove_many():
             x = my_tree.selection()
             #y = my_tree.item(my_tree.selection())["name"]
