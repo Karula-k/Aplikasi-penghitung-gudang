@@ -136,8 +136,12 @@ class SecondPage(tk.Frame):
             for record in data:
                 my_tree.insert(parent='', index='end', text="", values=(record[0],record[1], record[2], record[3],record[4],record[5],record[6],record[7],record[8]))
         def add_values():
-            ayam.add_br(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
-            dimensi_str.get(),expire_str.get())
+            if name_str.get()!="" and Spp_str.get()!="" and hargaint.get()!="" and tgl_str.get()!="" and\
+                 rak_str.get() !="" and type_str.get()!="" :
+                ayam.add_br(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
+                dimensi_str.get(),expire_str.get())
+            else:
+                messagebox.showinfo('Error',"please fill the entry")
             remove_all()
             view()
             idstr.set("")
@@ -317,7 +321,7 @@ class Application(tk.Tk):
         frame = self.frames[page]
         frame.tkraise()
         self.title("Application")
-
+#perlu dibenahi ke bridge
 app = Application()
 app.maxsize(800,500)
 app.resizable('false','false')

@@ -121,17 +121,7 @@ class Login_syt:
         cur.execute("insert into "+self.data+" values (NULL,?,?)",(Username,Password))
         con.commit()
         con.close()
-
-ayam = Data_source("ayam","stocks")
-ayam2 = Login_syt('ayam')
-# ayam2.Data_Pengguna("usop",'pembohong')
-# ayam.Data_Update("ayam")
-# data1 = Login(input("Masukkan Username : "), input("Masukkan Password : "))
-# print(data1.Data_Pengguna())
-
-
-
-class login_call(Data_source):
+class login_call(Login_syt):
     def __init__(self, db_name, table_name='Datauser'):
         super().__init__(db_name, table_name=table_name)
     
@@ -151,4 +141,9 @@ class login_call(Data_source):
         con.commit()
         con.close()
         return row 
+
+#perlu dibenahi ke bridge
+ayam = Data_source("ayam","stocks")
+ayam2 = Login_syt('ayam')
 uy = login_call("ayam")
+
