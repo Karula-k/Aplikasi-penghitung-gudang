@@ -8,19 +8,19 @@ class barang(metaclass=abc.ABCMeta):
     def DataUpdate(self):
         pass
 class liquid(barang):
-    def addItems(self,name,Supplier,harga,tanggal_masuk,rak,type_benda,expire_liquid):
+    def addItems(self,name,Supplier,harga,tanggal_masuk,rak,type_benda,dimensi,expire_liquid):
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()
         cur.execute("insert into "+self.table_name+" values (NULL,?,?,?,?,?,?,?,?)",
-        (name,Supplier,harga,tanggal_masuk,rak,type_benda,"NULL",expire_liquid))
+        (name,Supplier,harga,tanggal_masuk,rak,type_benda,dimensi,expire_liquid))
         con.commit()
         con.close()
 
-    def DataUpdate (self,name=None,Supplier=None,harga=None,tanggal_masuk=None,rak=None,type_benda=None,expire_liquid=None,idbr=-1):
+    def DataUpdate (self,name=None,Supplier=None,harga=None,tanggal_masuk=None,rak=None,type_benda=None,dimensi=None,expire_liquid=None,idbr=-1):
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()
         dict_items = {"name":name,"Supplier":Supplier,"harga":harga,"tanggal_masuk":tanggal_masuk,"rak":rak,"\
-            type_benda":type_benda,"expire_liquid":expire_liquid}
+            type_benda":type_benda,"dimensi_benda":dimensi,"expire_liquid":expire_liquid}
         text2 = {k: v for k, v in dict_items.items() if v is not None}
         text ="Update "+self.table_name+" Set "+",".join([i+"="+"'"+text2[i]+"'"for i in text2])+" \
             where id="+str(idbr)
@@ -41,7 +41,7 @@ class padatan(barang):
         dict_items = {"name":name,"Supplier":Supplier,"harga":harga,"tanggal_masuk":tanggal_masuk,"rak":rak,"\
             type_benda":type_benda,"dimensi_benda":dimensi}
         text2 = {k: v for k, v in dict_items.items() if v is not None}
-        text ="Update "+self.table_name+" Set "+",".join([i+"="+"'"+text2[i]+"'"for i in text2])+" \
+        text ="Update "+self.table_name+" Set "+",".join([i+"="+"'"+text2[i]+"'"for i in text2])+",expire_liquid='None' \
             where id="+str(idbr)
         cur.execute(text)
         con.commit()
@@ -61,7 +61,7 @@ class Data_source():
         con.close()
     def add_br(self,*args):
         if args[5]=="liquid":
-            h = liquid.addItems(self,args[0],args[1],args[2],args[3],args[4],args[5],args[7])
+            h = liquid.addItems(self,args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7])
             print(args)
         else:
             h = padatan.addItems(self,args[0],args[1],args[2],args[3],args[4],args[5],args[6])
@@ -75,7 +75,7 @@ class Data_source():
         return rows
     def update(self,*args):
         if args[5]=="liquid":
-            h = liquid.DataUpdate(self,args[0],args[1],args[2],args[3],args[4],args[5],args[7],args[8])
+            h = liquid.DataUpdate(self,args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8])
             print(args)
         else:
             h = padatan.DataUpdate(self,args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[8])
@@ -125,7 +125,7 @@ class Login_syt:
 class login_call(Login_syt):
     def __init__(self, db_name, table_name='Datauser'):
         super().__init__(db_name, table_name=table_name)
-    
+        self.table_name = table_name
     def Search_Data(self,Username,Password):
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()
@@ -142,9 +142,4 @@ class login_call(Login_syt):
         con.commit()
         con.close()
         return row 
-
-#perlu dibenahi ke bridge
-ayam = Data_source("ayam","stocks")
-ayam2 = Login_syt('ayam')
-uy = login_call("ayam")
 
