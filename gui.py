@@ -2,9 +2,9 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 from sql import *
-from main import *
 class FirstPage(tk.Frame):
     def __init__(self, parent, controller):
+        global db
         tk.Frame.__init__(self, parent)
         self.configure(bg="DarkOliveGreen1")
         
@@ -24,7 +24,7 @@ class FirstPage(tk.Frame):
         def verify():
             try:
                 sign = 0
-                for i in uy.Call_data():
+                for i in db[1].Call_data():
                     if i[1].strip()==T1.get() and i[2].strip()==T2.get():
                         controller.show_frame(SecondPage)
                         sign=1
@@ -46,7 +46,7 @@ class SecondPage(tk.Frame):
         self.configure(bg="cadet blue")
         mainframe = tk.Frame(self)
 
-        
+        global db
         mainframe.grid()
         
         tree_frame = tk.Frame(mainframe)
@@ -132,13 +132,13 @@ class SecondPage(tk.Frame):
 		        my_tree.delete(record)
         def view():
             remove_all()
-            data = ayam.viewData()
+            data = db[0].viewData()
             for record in data:
                 my_tree.insert(parent='', index='end', text="", values=(record[0],record[1], record[2], record[3],record[4],record[5],record[6],record[7],record[8]))
         def add_values():
             if name_str.get()!="" and Spp_str.get()!="" and hargaint.get()!="" and tgl_str.get()!="" and\
                  rak_str.get() !="" and type_str.get()!="" :
-                ayam.add_br(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
+                dn.add_br(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
                 dimensi_str.get(),expire_str.get())
             else:
                 messagebox.showinfo('Error',"please fill the entry")
@@ -159,7 +159,7 @@ class SecondPage(tk.Frame):
             print(x)
             for record in x:
                 remove_all()
-                ayam.delete_items(id_str.get())
+                db[0].delete_items(id_str.get())
                 view()
             idstr.set("")
             name_str.delete(0, tk.END)
@@ -195,7 +195,7 @@ class SecondPage(tk.Frame):
             expire_str.insert(0,values[8])
         def update():
             selected = my_tree.focus()
-            ayam.update(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
+            db[0].update(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
             dimensi_str.get(),expire_str.get(),id_str.get())
             remove_all()
             view()
@@ -210,7 +210,7 @@ class SecondPage(tk.Frame):
             expire_str.delete(0,tk.END)
         def search():
             remove_all()
-            data = ayam.Search_Data(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
+            data = db[0].Search_Data(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
             dimensi_str.get(),expire_str.get())
             for record in data:
                 my_tree.insert(parent='', index='end', text="", values=(record[0],record[1], record[2], record[3],record[4],record[5],record[6],record[7],record[8]))
@@ -230,7 +230,7 @@ class SecondPage(tk.Frame):
             region = int(region.strip('#'))-1
             print(region)
             my_column= ["id","Name", "Supplier", "harga","Tanggal Masuk","Rak","type","Dimensi","Expire_cair"]
-            data = ayam.order_by(my_column[region])
+            data = db[0].order_by(my_column[region])
             remove_all()
             for record in data:
                 my_tree.insert(parent='', index='end', text="", values=(record[0],record[1], record[2], record[3],record[4],record[5],record[6],record[7],record[8]))
@@ -254,7 +254,7 @@ class SecondPage(tk.Frame):
 class ThirdPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        
+        global db
         self.configure(bg='Tomato')
         #variable
         signnbdr = tk.LabelFrame(self, text='Sign Up', bg='ivory', bd = 10, font=("Arial", 20))
@@ -280,14 +280,14 @@ class ThirdPage(tk.Frame):
         def submit():
             if usernament.get() !="" and passworden.get() !="" and repassworden.get() != "":
                 if passworden.get() == repassworden.get():
-                    for i in uy.Call_data():
+                    for i in db[1].Call_data():
                         if i[1].strip()==usernament.get() and i[2].strip()==passworden.get():
                             messagebox.showinfo("Error","Data Already taken")
                             break
                     else:
                         user=usernament.get()
                         pas=passworden.get()
-                        ayam2.Data_Pengguna(user,pas)
+                        db[1].Data_Pengguna(user,pas)
                         messagebox.showinfo("Succes","your account has registed")
                         controller.show_frame(FirstPage)
                 else:
@@ -299,9 +299,10 @@ class ThirdPage(tk.Frame):
         
         
 class Application(tk.Tk):
-    def __init__(self, *args, **kwargs):
+    def __init__(self,db_name,table_name, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        
+        global db
+        db =[Data_source(db_name,table_name),login_call(db_name)]
         #creating a window
         window = tk.Frame(self)
         window.pack()
@@ -321,8 +322,3 @@ class Application(tk.Tk):
         frame = self.frames[page]
         frame.tkraise()
         self.title("Application")
-#perlu dibenahi ke bridge
-app = Application()
-app.maxsize(800,500)
-app.resizable('false','false')
-app.mainloop()
