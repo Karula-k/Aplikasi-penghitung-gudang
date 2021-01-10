@@ -16,11 +16,11 @@ class liquid(barang):
         con.commit()
         con.close()
 
-    def DataUpdate (self,name=None,Supplier=None,harga=None,tanggal_masuk=None,rak=None,expire_liquid=None,idbr=-1):
+    def DataUpdate (self,name=None,Supplier=None,harga=None,tanggal_masuk=None,rak=None,type_benda=None,expire_liquid=None,idbr=-1):
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()
         dict_items = {"name":name,"Supplier":Supplier,"harga":harga,"tanggal_masuk":tanggal_masuk,"rak":rak,"\
-            type_benda":"liquid","expire_liquid":expire_liquid}
+            type_benda":type_benda,"expire_liquid":expire_liquid}
         text2 = {k: v for k, v in dict_items.items() if v is not None}
         text ="Update "+self.table_name+" Set "+",".join([i+"="+"'"+text2[i]+"'"for i in text2])+" \
             where id="+str(idbr)
@@ -35,10 +35,11 @@ class padatan(barang):
         (name,Supplier,harga,tanggal_masuk,rak,type_benda,dimensi_benda))
         con.commit()
         con.close()
-    def DataUpdate (self,name=None,Supplier=None,harga=None,tanggal_masuk=None,rak=None,type_benda=None,dimnesi=None,idbr=-1):
+    def DataUpdate (self,name=None,Supplier=None,harga=None,tanggal_masuk=None,rak=None,type_benda=None,dimensi=None,idbr=-1):
         con=sqlite3.connect(self.db_name)
         cur =con.cursor()
-        dict_items = {"name":name,"Supplier":Supplier,"harga":harga,"tanggal_masuk":tanggal_masuk}
+        dict_items = {"name":name,"Supplier":Supplier,"harga":harga,"tanggal_masuk":tanggal_masuk,"rak":rak,"\
+            type_benda":type_benda,"dimensi_benda":dimensi}
         text2 = {k: v for k, v in dict_items.items() if v is not None}
         text ="Update "+self.table_name+" Set "+",".join([i+"="+"'"+text2[i]+"'"for i in text2])+" \
             where id="+str(idbr)
