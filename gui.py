@@ -138,7 +138,7 @@ class SecondPage(tk.Frame):
         def add_values():
             if name_str.get()!="" and Spp_str.get()!="" and hargaint.get()!="" and tgl_str.get()!="" and\
                  rak_str.get() !="" and type_str.get()!="" :
-                dn.add_br(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
+                db[0].add_br(name_str.get(),Spp_str.get(),hargaint.get(),tgl_str.get(),rak_str.get(),type_str.get(),
                 dimensi_str.get(),expire_str.get())
             else:
                 messagebox.showinfo('Error',"please fill the entry")
